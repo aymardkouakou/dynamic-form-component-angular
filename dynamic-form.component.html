@@ -1,0 +1,73 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit($event)" aria-labelledby="form-header" role="form">
+  <h5 *ngIf="header" id="form-header" class="form-header">{{ header }}</h5>
+  <div *ngIf="description" class="form-desc">{{ description }}</div>
+
+  <ng-container *ngFor="let key of modelKeys">
+    <div class="form-group"
+         [ngClass]="{'has-error has-danger': form.get(key)?.errors && (form.get(key)?.dirty || form.get(key)?.touched)}">
+      <label [for]="key + '_id'">{{ getLabel(key) || key }}</label>
+
+      <ng-container [ngSwitch]="getFieldType(key)">
+
+        <ng-container *ngSwitchCase="'select'">
+          <select [id]="key + '_id'" [formControlName]="key" class="form-control" aria-required="true">
+            <option *ngIf="getPlaceholder(key)">{{ getPlaceholder(key) }}</option>
+          </select>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'textarea'">
+          <textarea [id]="key + '_id'" class="form-control" [placeholder]="getPlaceholder(key)" [formControlName]="key"
+                    aria-required="true">
+          </textarea>
+        </ng-container>
+
+        <ng-container *ngSwitchDefault>
+          <input
+            [id]="key + '_id'"
+            [type]="getFieldType(key) || 'text'"
+            class="form-control"
+            [ngClass]="{'single-daterange': getFieldType(key) === 'date'}"
+            [placeholder]="getPlaceholder(key) || ''"
+            [formControlName]="key"
+            aria-required="true"
+          />
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="getIcon(key)">
+        <div class="pre-icon" [ngClass]="getIcon(key)"></div>
+      </ng-container>
+
+      <ng-container *ngIf="form.get(key)?.invalid && (form.get(key)?.dirty || form.get(key)?.touched)">
+        <div class="help-block form-text form-control-feedback"
+             [ngClass]="{'with-errors': form.get(key)?.errors}">
+          <ul *ngIf="form.get(key)?.errors" class="list-unstyled">
+            <li *ngIf="form.get(key)?.errors?.['email']">{{ getLabel(key) || key }} valide est requis</li>
+            <li *ngIf="form.get(key)?.errors?.['required']">{{ getLabel(key) || key }} est requis</li>
+            <li *ngIf="form.get(key)?.errors?.['minlength']">
+              Nombre de caractères minimum requis: {{ form.get(key)?.errors?.['minlength']['requiredLength'] }}
+            </li>
+          </ul>
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
+
+  <div class="buttons-w">
+    <div class="row">
+      <div class="col-8">
+        <button [disabled]="!form.valid || isLoading" type="submit" class="btn btn-primary">
+          <ng-container *ngIf="!isLoading">{{ submitButtonText }}</ng-container>
+          <ng-container *ngIf="isLoading">
+            <span role="status" aria-hidden="true">Patientez un instant...</span>
+          </ng-container>
+        </button>
+      </div>
+      <div class="col-4 text-right">
+        <span *ngIf="isLoading" [style.display]="'block'">
+          <span class="spinner-grow" role="status" aria-hidden="true"></span>
+        </span>
+      </div>
+    </div>
+  </div>
+</form>

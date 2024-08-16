@@ -1,5 +1,3 @@
-Voici un exemple de documentation que vous pouvez utiliser pour votre composant dynamique de formulaire sur GitHub :
-
 ## Dynamic Form Component for Angular
 
 This component allows you to easily generate dynamic forms in your Angular applications based on a simple model object.
